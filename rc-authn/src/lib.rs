@@ -132,8 +132,13 @@ impl<T: HasJwt> HasJwt for std::sync::Arc<T> {
     }
 }
 
-/// Извлекается из запроса: проверяет access-токен (ES256) и даёт `user_id`.
-pub struct AuthUser(pub Uuid);
+/// Извлекается из запроса: проверяет access-токен (ES256) и даёт `id` пользователя
+/// плюс сырой `token` — чтобы сервис мог форвардить его во внутренние вызовы
+/// (напр. practice → goals за текстами колоды под правами пользователя).
+pub struct AuthUser {
+    pub id: Uuid,
+    pub token: String,
+}
 
 #[axum::async_trait]
 impl<S> FromRequestParts<S> for AuthUser
@@ -157,6 +162,9 @@ where
             .map_err(|_| AppError::Unauthorized("невалидный или просроченный токен".into()))?;
         let id = Uuid::parse_str(&claims.sub)
             .map_err(|_| AppError::Unauthorized("битый sub в токене".into()))?;
-        Ok(AuthUser(id))
+        Ok(AuthUser {
+            id,
+            token: token.to_string(),
+        })
     }
 }
