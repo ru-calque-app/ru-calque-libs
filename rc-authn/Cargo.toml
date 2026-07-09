@@ -1,0 +1,16 @@
+[package]
+name = "rc-authn"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Общий client-side JWT ru-calque: ES256 verify/sign + axum-экстрактор AuthUser."
+
+[dependencies]
+rc-http = { path = "../rc-http" }
+axum.workspace = true
+anyhow.workspace = true
+serde.workspace = true
+jsonwebtoken.workspace = true
+uuid.workspace = true
+chrono.workspace = true

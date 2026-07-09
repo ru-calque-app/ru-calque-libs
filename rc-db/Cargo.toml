@@ -1,0 +1,12 @@
+[package]
+name = "rc-db"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Общий Postgres-пул + раннер идемпотентных миграций ru-calque."
+
+[dependencies]
+anyhow.workspace = true
+sqlx.workspace = true
+tracing.workspace = true
