@@ -26,6 +26,8 @@ pub enum AppError {
     NotFound(String),
     #[error("conflict: {0}")]
     Conflict(String),
+    #[error("payload too large: {0}")]
+    PayloadTooLarge(String),
     #[error(transparent)]
     Internal(#[from] anyhow::Error),
 }
@@ -53,6 +55,11 @@ impl AppError {
             Self::Forbidden(_) => (StatusCode::FORBIDDEN, "forbidden", "Forbidden"),
             Self::NotFound(_) => (StatusCode::NOT_FOUND, "not-found", "Not found"),
             Self::Conflict(_) => (StatusCode::CONFLICT, "conflict", "Conflict"),
+            Self::PayloadTooLarge(_) => (
+                StatusCode::PAYLOAD_TOO_LARGE,
+                "payload-too-large",
+                "Payload too large",
+            ),
             Self::Internal(_) => (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "internal",
@@ -76,7 +83,8 @@ impl IntoResponse for AppError {
             | Self::Unauthorized(m)
             | Self::Forbidden(m)
             | Self::NotFound(m)
-            | Self::Conflict(m) => m.clone(),
+            | Self::Conflict(m)
+            | Self::PayloadTooLarge(m) => m.clone(),
         };
         let body = Problem {
             type_: format!("https://errors.ru-calque.app/{slug}"),
