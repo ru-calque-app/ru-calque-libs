@@ -30,6 +30,12 @@ pub fn public_pem() -> &'static [u8] {
     include_bytes!("../keys/es256_public.pem")
 }
 
+/// Приватный ключ фикстуры — для сервиса-подписанта (auth) строит `Jwt::signer`
+/// в `build_app` из той же пары, что подписывает `token()`. Тест-фикстура, не прод.
+pub fn private_pem() -> &'static [u8] {
+    PRIVATE_PEM
+}
+
 fn test_database_url(default_db: &str) -> String {
     std::env::var("TEST_DATABASE_URL")
         .unwrap_or_else(|_| format!("postgres://msk-hq-nb-1221@127.0.0.1:5432/{default_db}"))
