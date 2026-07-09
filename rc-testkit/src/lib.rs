@@ -77,6 +77,31 @@ impl Harness {
         self.req(reqwest::Method::GET, path, token, None).await
     }
 
+    /// GET без Bearer-токена (публичные/dev-эндпоинты).
+    pub async fn get_anon(&self, path: &str) -> reqwest::Response {
+        self.http.get(self.url(path)).send().await.unwrap()
+    }
+
+    /// POST без Bearer-токена, JSON-тело (напр. dev-seed).
+    pub async fn post_anon(&self, path: &str, body: serde_json::Value) -> reqwest::Response {
+        self.http
+            .post(self.url(path))
+            .json(&body)
+            .send()
+            .await
+            .unwrap()
+    }
+
+    /// Полный URL по пути — escape-hatch для полностью кастомных запросов.
+    pub fn url(&self, path: &str) -> String {
+        format!("{}{path}", self.base_url)
+    }
+
+    /// HTTP-клиент стенда — escape-hatch (свои заголовки и т.п.).
+    pub fn client(&self) -> &reqwest::Client {
+        &self.http
+    }
+
     /// GET внутреннего эндпоинта с `X-Internal-Key` (без Bearer). `None` — без ключа.
     pub async fn internal_get(&self, path: &str, key: Option<&str>) -> reqwest::Response {
         let mut r = self.http.get(format!("{}{path}", self.base_url));
