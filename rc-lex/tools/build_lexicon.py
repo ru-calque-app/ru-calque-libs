@@ -5,8 +5,9 @@
 
   CEFR-J Vocabulary Profile 1.5   слово + POS + уровень A1..B2
   Octanove Vocabulary Profile     слово + POS + уровень C1..C2
-  FrequencyWords (OpenSubtitles)  частотность → zipf
+  FrequencyWords (OpenSubtitles)  частотность слов → zipf
   Wiktionary (category API)       многословные единицы: фразовые глаголы, идиомы
+  Tatoeba (корпус)                частотность многословных единиц → zipf → их уровень
 
 Уровень многословных единиц ни в одном открытом словаре не размечен — выводим сами
 (`cefr_source=derived`, см. `derive_mwe_cefr`), поэтому доверять ему как размеченному
@@ -17,6 +18,7 @@ CEFR-J нельзя: это оценка, а не факт.
 """
 
 import argparse
+import bz2
 import csv
 import io
 import json
@@ -36,6 +38,31 @@ CEFRJ_URL = "https://raw.githubusercontent.com/openlanguageprofiles/olp-en-cefrj
 OCTANOVE_URL = "https://raw.githubusercontent.com/openlanguageprofiles/olp-en-cefrj/master/octanove-vocabulary-profile-c1c2-1.0.csv"
 FREQ_URL = "https://raw.githubusercontent.com/hermitdave/FrequencyWords/master/content/2018/en/en_50k.txt"
 WIKTIONARY_API = "https://en.wiktionary.org/w/api.php"
+# Корпус для частотности многословных единиц: униграммный список их не покрывает, а без
+# частотности уровень фразового глагола выводить не из чего (`move` — A1, но `move in` —
+# точно не A1). Tatoeba: ~1.6 млн разговорных предложений, CC BY — можно коммерчески.
+CORPUS_URL = "https://downloads.tatoeba.org/exports/per_language/eng/eng_sentences.tsv.bz2"
+
+# Неправильные глаголы: `got up` должно считаться в `get up`. Правильные формы снимаются
+# правилами (см. `verb_bases`), а эти — только списком. Взяты частотные головы фразовых
+# глаголов; редкие пропустить не страшно — они и так уйдут в верхние уровни.
+IRREGULAR = {
+    "got": "get", "gotten": "get", "went": "go", "gone": "go", "came": "come",
+    "took": "take", "taken": "take", "gave": "give", "given": "give", "made": "make",
+    "did": "do", "done": "do", "had": "have", "was": "be", "were": "be", "been": "be",
+    "put": "put", "ran": "run", "run": "run", "sat": "sit", "stood": "stand",
+    "held": "hold", "kept": "keep", "brought": "bring", "broke": "break",
+    "broken": "break", "cut": "cut", "found": "find", "left": "leave", "let": "let",
+    "lay": "lie", "paid": "pay", "said": "say", "saw": "see", "seen": "see",
+    "sent": "send", "set": "set", "shut": "shut", "spoke": "speak", "spent": "spend",
+    "thought": "think", "threw": "throw", "thrown": "throw", "told": "tell",
+    "wore": "wear", "won": "win", "wrote": "write", "written": "write", "grew": "grow",
+    "drew": "draw", "fell": "fall", "fallen": "fall", "felt": "feel", "flew": "fly",
+    "hung": "hang", "heard": "hear", "knew": "know", "known": "know", "lost": "lose",
+    "meant": "mean", "met": "meet", "read": "read", "rode": "ride", "rose": "rise",
+    "sold": "sell", "shot": "shoot", "sang": "sing", "slept": "sleep", "spread": "spread",
+    "stuck": "stick", "swept": "sweep", "tore": "tear", "woke": "wake", "worn": "wear",
+}
 
 # Категории Wiktionary → kind в словаре.
 MWE_CATEGORIES = {
@@ -141,25 +168,107 @@ def fetch_category(category: str, cache: pathlib.Path | None) -> list[str]:
         page += 1
 
 
-def derive_mwe_cefr(unit: str, cefr: dict[tuple[str, str], str], zipf: dict[str, float]) -> str:
-    """Уровень многословной единицы: по головному слову, но на ступень выше.
+def verb_bases(token: str) -> set[str]:
+    """Токен → возможные словарные формы глагола (`moving` → `move`, `got` → `get`).
 
-    Фразовый глагол сложнее своих частей (`get` — A1, `get over` — точно не A1):
-    значение неразложимо, и это ровно то, на чём ученик буксует. Головное слово вне
-    словаря → идём от частотности; совсем редкое → C2.
+    Правила снимают правильные окончания, список — неправильные формы. Лишние кандидаты
+    безвредны: они просто не совпадут ни с одной единицей словаря.
     """
-    head = unit.split()[0]
-    levels = [lvl for (word, _), lvl in cefr.items() if word == head]
-    if levels:
-        base = min(levels, key=LEVELS.index)
-        return LEVELS[min(LEVELS.index(base) + 1, len(LEVELS) - 1)]
-    z = zipf.get(head, 0.0)
-    if z >= 5.0:
-        return "B1"
-    if z >= 4.0:
-        return "B2"
-    if z >= 3.0:
-        return "C1"
+    out = {token}
+    if token in IRREGULAR:
+        out.add(IRREGULAR[token])
+    if token.endswith("ies") and len(token) > 4:
+        out.add(token[:-3] + "y")
+    if token.endswith(("es", "ed")) and len(token) > 3:
+        out.add(token[:-2])
+        out.add(token[:-1])
+    elif token.endswith("s") and len(token) > 2:
+        out.add(token[:-1])
+    if token.endswith("ing") and len(token) > 4:
+        stem = token[:-3]
+        out.add(stem)
+        out.add(stem + "e")
+        if len(stem) > 2 and stem[-1] == stem[-2]:  # `putting` → `put`
+            out.add(stem[:-1])
+    if token.endswith("ed") and len(token) > 4:
+        stem = token[:-2]
+        if len(stem) > 2 and stem[-1] == stem[-2]:  # `stopped` → `stop`
+            out.add(stem[:-1])
+    return out
+
+
+def count_mwe(blob: bytes, units: set[str]) -> dict[str, float]:
+    """Частотность многословных единиц по корпусу → zipf.
+
+    Униграммный частотный список тут бесполезен, а без частотности уровень фразового
+    глагола брать неоткуда. Считаем словоформы (`got up`, `moving in` → `get up`, `move in`),
+    хвост единицы (`up`, `in`, `away with`) неизменяем.
+    """
+    max_len = max(len(u.split()) for u in units)
+    counts: dict[str, int] = {}
+    total = 0
+    for line in blob.decode("utf-8", "replace").splitlines():
+        parts = line.split("\t")
+        if len(parts) < 3:
+            continue
+        tokens = [t for t in tokenize(parts[2]) if t]
+        total += len(tokens)
+        for i, token in enumerate(tokens):
+            bases = verb_bases(token)
+            for n in range(2, min(max_len, len(tokens) - i) + 1):
+                tail = " ".join(tokens[i + 1 : i + n])
+                for base in bases:
+                    unit = f"{base} {tail}"
+                    if unit in units:
+                        counts[unit] = counts.get(unit, 0) + 1
+                        break
+    print(f"корпус: {total} токенов, найдено {len(counts)} многословных единиц", file=sys.stderr)
+    return {u: round(math.log10(c / total * 1e9), 2) for u, c in counts.items()}
+
+
+def tokenize(text: str) -> list[str]:
+    return "".join(c.lower() if (c.isalnum() or c == "'") else " " for c in text).split()
+
+
+# Уровень многословной единицы — по её РАНГУ частотности среди единиц того же типа, а не
+# по абсолютному zipf: корпус небольшой, абсолютные значения сжаты, и по любому разумному
+# порогу в A2 сваливается всё подряд. Ранг же устойчив.
+#
+# Границы откалиброваны по якорям, которые преподаватель разложит одинаково:
+#   get up(25) come back(15) find out(20) wake up(34)  → A2, учат сразу;
+#   look after(106) move in(173)                       → B1;
+#   put up with(222) account for(308) attend to(499)   → B2;
+#   дальше — хвост, который в речи не встречается.
+# Идиомы сдвинуты на ступень: идиома уровня A2 — редкость, это заведомо не начальный слой.
+#
+# Это по-прежнему оценка (`derived`), но опирается она на частотность самой единицы, а не
+# на её головной глагол: по голове `move in` выходил A2 («сначала mother/father, потом
+# move in»), потому что `move` — A1.
+PV_BANDS = [(50, "A2"), (200, "B1"), (800, "B2"), (2000, "C1")]
+IDIOM_BANDS = [(100, "B1"), (500, "B2"), (1500, "C1")]
+
+
+def rank_by_frequency(mwe: list[tuple[str, str]], mwe_zipf: dict[str, float]) -> dict[str, int]:
+    """Единица → её ранг частотности среди единиц того же типа (1 — самая частая)."""
+    ranks: dict[str, int] = {}
+    for kind in {k for _, k in mwe}:
+        units = sorted(
+            (u for u, k in mwe if k == kind),
+            key=lambda u: -mwe_zipf.get(u, 0.0),
+        )
+        ranks.update({u: i + 1 for i, u in enumerate(units)})
+    return ranks
+
+
+def derive_mwe_cefr(unit: str, kind: str, ranks: dict[str, int], mwe_zipf: dict[str, float]) -> str:
+    """Уровень многословной единицы: из её ранга частотности в корпусе."""
+    if mwe_zipf.get(unit, 0.0) <= 0.0:  # в корпусе не встретилась ни разу
+        return "C2"
+    bands = PV_BANDS if kind == "phrasal_verb" else IDIOM_BANDS
+    rank = ranks[unit]
+    for ceiling, level in bands:
+        if rank <= ceiling:
+            return level
     return "C2"
 
 
@@ -188,31 +297,41 @@ def build(cache: pathlib.Path | None) -> list[dict[str, str]]:
             }
         )
 
+    # Многословные единицы: сперва собираем инвентарь, потом считаем его частотность по
+    # корпусу — уровень выводим уже из неё.
+    mwe: list[tuple[str, str]] = []
     seen = {(r["unit"], r["kind"]) for r in rows}
     for category, kind in MWE_CATEGORIES.items():
         titles = fetch_category(category, cache)
         print(f"{category}: {len(titles)}", file=sys.stderr)
         for title in titles:
             unit = title.strip().lower()
-            # Единицы вида `abate of` (архаика) и мусор с заглавными/пунктуацией не
-            # отсеиваем: они просто редко совпадут. Отсеиваем только неанглийское.
+            # Единицы вида `abate of` (архаика) не отсеиваем: они просто редко совпадут и
+            # уйдут в верхние уровни. Отсеиваем только неанглийское.
             if not unit or not all(c.isalpha() or c in " -'" for c in unit):
                 continue
             if " " not in unit or (unit, kind) in seen:
                 continue
             seen.add((unit, kind))
-            prefix = "pv" if kind == "phrasal_verb" else "idm"
-            rows.append(
-                {
-                    "id": f"{prefix}:{slug(unit)}",
-                    "unit": unit,
-                    "kind": kind,
-                    "pos": "verb" if kind == "phrasal_verb" else "",
-                    "cefr": derive_mwe_cefr(unit, cefr, zipf),
-                    "cefr_source": "derived",
-                    "zipf": f"{zipf.get(unit, 0.0):.2f}",
-                }
-            )
+            mwe.append((unit, kind))
+
+    corpus = bz2.decompress(fetch(CORPUS_URL, cache, "eng_sentences.tsv.bz2"))
+    mwe_zipf = count_mwe(corpus, {unit for unit, _ in mwe})
+    ranks = rank_by_frequency(mwe, mwe_zipf)
+
+    for unit, kind in mwe:
+        prefix = "pv" if kind == "phrasal_verb" else "idm"
+        rows.append(
+            {
+                "id": f"{prefix}:{slug(unit)}",
+                "unit": unit,
+                "kind": kind,
+                "pos": "verb" if kind == "phrasal_verb" else "",
+                "cefr": derive_mwe_cefr(unit, kind, ranks, mwe_zipf),
+                "cefr_source": "derived",
+                "zipf": f"{mwe_zipf.get(unit, 0.0):.2f}",
+            }
+        )
     return rows
 
 

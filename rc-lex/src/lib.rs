@@ -371,6 +371,20 @@ mod tests {
         assert!(a.unknown.iter().any(|w| w == "kropotkin"));
     }
 
+    /// Уровень фразового глагола должен идти от частотности САМОГО глагола, а не от его
+    /// головы. Пока он выводился по голове, `move in` получал A2 (`move` — A1): выходило,
+    /// что фразовый глагол учат сразу после `mother`/`father`. Якоря — порядок, в котором
+    /// эти единицы реально появляются в обучении.
+    #[test]
+    fn phrasal_verb_level_follows_its_own_frequency() {
+        let level = |unit: &str| dict().lookup(unit).unwrap().cefr;
+        assert_eq!(level("get up"), Cefr::A2);
+        assert_eq!(level("move in"), Cefr::B1);
+        assert_eq!(level("put up with"), Cefr::B2);
+        assert!(level("get up") < level("move in"));
+        assert!(level("move in") < level("put up with"));
+    }
+
     #[test]
     fn mwe_level_is_marked_as_derived() {
         // У фразовых глаголов CEFR нет ни в одном открытом словаре — наш вывод должен быть
