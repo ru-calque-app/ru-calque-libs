@@ -1,0 +1,11 @@
+[package]
+name = "rc-lex"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Лексический словарь ru-calque: единица → CEFR + частотность, разбор английского текста на единицы."
+
+[dependencies]
+serde.workspace = true
+wordnet-lemmatizer.workspace = true

@@ -1172,6 +1172,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "rc-lex"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "wordnet-lemmatizer",
+]
+
+[[package]]
 name = "rc-testkit"
 version = "0.1.0"
 dependencies = [
@@ -2239,6 +2247,12 @@ name = "windows_x86_64_msvc"
 version = "0.52.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "589f6da84c646204747d1270a2a5661ea66ed1cced2631d546fdfb155959f9ec"
+
+[[package]]
+name = "wordnet-lemmatizer"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "665d1d6d46d3e76785cf018b30103388fa62a4289b236b04326a832d038d4339"
 
 [[package]]
 name = "writeable"
