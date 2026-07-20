@@ -382,7 +382,7 @@ fn weakest(predictions: &[ConceptPrediction]) -> Vec<ConceptPrediction> {
 mod tests {
     use chrono::{TimeZone, Utc};
 
-    use super::{posterior, predict_requirements, ProbabilitySource};
+    use super::{posterior, predict_requirements, LexicalPrediction, ProbabilitySource};
     use crate::concept::{Concept, ConceptKind, GroupId, MapCatalog, Realization};
     use crate::config::Config;
     use crate::error::LexError;
@@ -426,6 +426,22 @@ mod tests {
             &obs,
             &catalog(),
             &Config::default(),
+        )
+        .unwrap()
+    }
+
+    /// Прогноз с дефолтными конфигом и скорером — самый частый вызов в тестах.
+    fn run(
+        state: &LexicalState,
+        reqs: &[LexicalRequirement],
+        cat: &MapCatalog,
+    ) -> LexicalPrediction {
+        predict_requirements(
+            state,
+            reqs,
+            cat,
+            &Config::default(),
+            &BaselineScorer::default(),
         )
         .unwrap()
     }
@@ -611,22 +627,8 @@ mod tests {
             req("MAKE_DECISION", ConceptKind::Collocation),
         ];
         let state = state_with(&[("MAKE_DECISION", 1.0), ("MAKE_DECISION", 1.0)]);
-        let a = predict_requirements(
-            &state,
-            &reqs,
-            &catalog(),
-            &Config::default(),
-            &BaselineScorer::default(),
-        )
-        .unwrap();
-        let b = predict_requirements(
-            &state,
-            &reqs,
-            &catalog(),
-            &Config::default(),
-            &BaselineScorer::default(),
-        )
-        .unwrap();
+        let a = run(&state, &reqs, &catalog());
+        let b = run(&state, &reqs, &catalog());
         assert_eq!(a, b);
         let ids: Vec<_> = a
             .concept_predictions
@@ -662,14 +664,7 @@ mod tests {
         let requirement = req("REJECT_OFFER", ConceptKind::Collocation).with_realizations(vec![
             Realization::from_lexeme("turn down the offer", "pv:turn_down"),
         ]);
-        let p = predict_requirements(
-            &state,
-            &[requirement],
-            &catalog,
-            &Config::default(),
-            &BaselineScorer::default(),
-        )
-        .unwrap();
+        let p = run(&state, &[requirement], &catalog);
         let pred = &p.concept_predictions[0];
         assert_eq!(
             pred.matched_realization.as_deref(),
@@ -710,23 +705,9 @@ mod tests {
             req("MAKE_DECISION", ConceptKind::Collocation),
             req("REJECT_OFFER", ConceptKind::Collocation),
         ];
-        let before = predict_requirements(
-            &state,
-            &reqs,
-            &catalog(),
-            &Config::default(),
-            &BaselineScorer::default(),
-        )
-        .unwrap();
+        let before = run(&state, &reqs, &catalog());
         let restored = LexicalState::from_json(&state.to_json().unwrap()).unwrap();
-        let after = predict_requirements(
-            &restored,
-            &reqs,
-            &catalog(),
-            &Config::default(),
-            &BaselineScorer::default(),
-        )
-        .unwrap();
+        let after = run(&restored, &reqs, &catalog());
         for (x, y) in before
             .concept_predictions
             .iter()

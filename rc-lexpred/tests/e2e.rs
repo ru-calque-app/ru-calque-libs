@@ -191,22 +191,7 @@ fn assert_close(a: &LexicalPrediction, b: &LexicalPrediction, name: &str) {
         "[{name}] разное число концептов"
     );
     for (x, y) in a.concept_predictions.iter().zip(&b.concept_predictions) {
-        assert_eq!(
-            x.concept_id, y.concept_id,
-            "[{name}] порядок концептов разъехался"
-        );
-        assert!(
-            (x.probability - y.probability).abs() < 1e-9,
-            "[{name}] {}: {} против {}",
-            x.concept_id,
-            x.probability,
-            y.probability
-        );
-        assert_eq!(
-            x.probability_source, y.probability_source,
-            "[{name}] {}: разный источник вероятности",
-            x.concept_id
-        );
+        assert_concept_close(x, y, name);
     }
     assert!(
         (a.expected_lexical_coverage - b.expected_lexical_coverage).abs() < 1e-9,
@@ -215,6 +200,29 @@ fn assert_close(a: &LexicalPrediction, b: &LexicalPrediction, name: &str) {
     assert!(
         (a.probability_lexically_acceptable - b.probability_lexically_acceptable).abs() < 1e-9,
         "[{name}] разная итоговая оценка"
+    );
+}
+
+fn assert_concept_close(
+    x: &rc_lexpred::ConceptPrediction,
+    y: &rc_lexpred::ConceptPrediction,
+    name: &str,
+) {
+    assert_eq!(
+        x.concept_id, y.concept_id,
+        "[{name}] порядок концептов разъехался"
+    );
+    assert_eq!(
+        x.probability_source, y.probability_source,
+        "[{name}] {}: разный источник вероятности",
+        x.concept_id
+    );
+    assert!(
+        (x.probability - y.probability).abs() < 1e-9,
+        "[{name}] {}: {} против {}",
+        x.concept_id,
+        x.probability,
+        y.probability
     );
 }
 
