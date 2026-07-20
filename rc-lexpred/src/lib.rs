@@ -97,7 +97,9 @@ pub use concept::{
 };
 pub use config::{Config, MissingConcept};
 pub use error::{LexError, LexResult};
-pub use observe::{observe, Attempt, Correction, Impact, ObserveConfig, Use};
+pub use observe::{
+    observe, observe_detailed, Attempt, Correction, Impact, ObserveConfig, Observed, Use,
+};
 pub use predict::{predict_requirements, ConceptPrediction, LexicalPrediction, ProbabilitySource};
 pub use requirement::{LexicalErrorKind, LexicalObservation, LexicalRequirement};
 pub use scorer::{BaselineScorer, SentenceScorer, SummaryFeatures};

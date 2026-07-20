@@ -86,7 +86,12 @@ pub enum Use {
     /// Выразил — одна из допустимых реализаций есть в речи.
     Expressed { realization: String },
     /// Покусился, но выбрал не то: разбор правит именно этот концепт.
-    WrongChoice { impact: Impact },
+    WrongChoice {
+        impact: Impact,
+        /// Индекс сработавшей правки в `Attempt::corrections` — чтобы вызывающий взял из
+        /// неё свои поля, а не искал её заново.
+        correction_index: usize,
+    },
     /// Не сказал точную единицу, но смысл донёс: удачный обход.
     Workaround,
     /// Не сказал и смысл не донёс.
@@ -155,15 +160,45 @@ pub fn observe(
     attempt: &Attempt<'_>,
     cfg: &ObserveConfig,
 ) -> LexResult<Vec<LexicalObservation>> {
+    Ok(observe_detailed(requirements, attempt, cfg)?
+        .into_iter()
+        .map(|o| o.observation)
+        .collect())
+}
+
+/// Наблюдение вместе с тем, как оно было получено.
+#[derive(Debug, Clone, PartialEq)]
+pub struct Observed {
+    /// Индекс требования во входном срезе — по нему вызывающий находит свои данные.
+    pub requirement_index: usize,
+    pub observation: LexicalObservation,
+    pub used: Use,
+}
+
+/// То же, что [`observe`], но с сохранением классификации.
+///
+/// Нужно вызывающему, которому мало числа: `ru-calque-eval` строит из наблюдения событие
+/// мастерства, и ему требуются степень вреда и та самая правка разбора. Без этого он искал
+/// бы правку повторно — то есть держал бы вторую копию логики сопоставления.
+pub fn observe_detailed(
+    requirements: &[LexicalRequirement],
+    attempt: &Attempt<'_>,
+    cfg: &ObserveConfig,
+) -> LexResult<Vec<Observed>> {
     cfg.validate()?;
     check_probability("transcript_confidence", attempt.transcript_confidence)?;
     let said = said_units(attempt.transcript);
     requirements
         .iter()
-        .filter(|req| !req.acceptable_realizations.is_empty())
-        .map(|req| {
+        .enumerate()
+        .filter(|(_, req)| !req.acceptable_realizations.is_empty())
+        .map(|(requirement_index, req)| {
             let used = classify(req, &said, attempt);
-            observation(req, &used, attempt, cfg)
+            Ok(Observed {
+                requirement_index,
+                observation: observation(req, &used, attempt, cfg)?,
+                used,
+            })
         })
         .collect()
 }
@@ -186,8 +221,16 @@ fn classify(req: &LexicalRequirement, said: &HashSet<String>, attempt: &Attempt<
     // Единицы нет — но, может, ученик её ПЫТАЛСЯ взять, и разбор поправил именно её
     // («I make a photo» → «I took a photo»). Это не обход, а ошибка: концепт он знает,
     // просто выбрал не ту реализацию.
-    if let Some(c) = attempt.corrections.iter().find(|c| corrects(c, req)) {
-        return Use::WrongChoice { impact: c.impact };
+    if let Some((i, c)) = attempt
+        .corrections
+        .iter()
+        .enumerate()
+        .find(|(_, c)| corrects(c, req))
+    {
+        return Use::WrongChoice {
+            impact: c.impact,
+            correction_index: i,
+        };
     }
     if attempt.meaning_conveyed() {
         Use::Workaround
@@ -265,7 +308,7 @@ fn observation(
 ) -> LexResult<LexicalObservation> {
     let (outcome, confidence_factor, error, realization) = match used {
         Use::Expressed { realization } => (1.0, 1.0, None, Some(realization.clone())),
-        Use::WrongChoice { impact } => (
+        Use::WrongChoice { impact, .. } => (
             cfg.outcome_for(*impact),
             1.0,
             Some(LexicalErrorKind::WrongChoice),
