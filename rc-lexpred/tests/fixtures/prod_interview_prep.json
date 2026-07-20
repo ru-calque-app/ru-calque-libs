@@ -1,0 +1,1137 @@
+{
+  "name": "prod_interview_prep",
+  "comment": "Реальные попытки с прода (интервью-подготовка, один ученик, 8 разных текстов). Якорь на живых данных: держит поведение библиотеки на настоящей разметке колоды и настоящих разборах, а не на придуманном сценарии. Пересечение лексики между текстами здесь ~13%, поэтому у большинства концептов цели личной истории нет — так выглядит реальность, и фикстура обязана это показывать.",
+  "concepts": [
+    {
+      "id": "w:experience|verb",
+      "kind": "lemma",
+      "base_probability": 0.6,
+      "realizations": [
+        {
+          "text": "experience",
+          "lexeme_id": "w:experience|verb"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "B1"
+    },
+    {
+      "id": "w:phoenix|noun",
+      "kind": "lemma",
+      "base_probability": 0.6,
+      "realizations": [
+        {
+          "text": "phoenix",
+          "lexeme_id": "w:phoenix|noun"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "B1"
+    },
+    {
+      "id": "w:year|noun",
+      "kind": "lemma",
+      "base_probability": 0.85,
+      "realizations": [
+        {
+          "text": "year",
+          "lexeme_id": "w:year|noun"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "A1"
+    },
+    {
+      "id": "pv:work_on",
+      "kind": "lemma",
+      "base_probability": 0.75,
+      "realizations": [
+        {
+          "text": "work on",
+          "lexeme_id": "pv:work_on"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "A2"
+    },
+    {
+      "id": "w:bill|verb",
+      "kind": "lemma",
+      "base_probability": 0.6,
+      "realizations": [
+        {
+          "text": "bill",
+          "lexeme_id": "w:bill|verb"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "B1"
+    },
+    {
+      "id": "w:high|adv",
+      "kind": "lemma",
+      "base_probability": 0.75,
+      "realizations": [
+        {
+          "text": "high",
+          "lexeme_id": "w:high|adv"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "A2"
+    },
+    {
+      "id": "w:load|verb",
+      "kind": "lemma",
+      "base_probability": 0.45,
+      "realizations": [
+        {
+          "text": "load",
+          "lexeme_id": "w:load|verb"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "B2"
+    },
+    {
+      "id": "w:payment|noun",
+      "kind": "lemma",
+      "base_probability": 0.45,
+      "realizations": [
+        {
+          "text": "payment",
+          "lexeme_id": "w:payment|noun"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "B2"
+    },
+    {
+      "id": "w:process|verb",
+      "kind": "lemma",
+      "base_probability": 0.45,
+      "realizations": [
+        {
+          "text": "process",
+          "lexeme_id": "w:process|verb"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "B2"
+    },
+    {
+      "id": "w:real|adv",
+      "kind": "lemma",
+      "base_probability": 0.85,
+      "realizations": [
+        {
+          "text": "real",
+          "lexeme_id": "w:real|adv"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "A1"
+    },
+    {
+      "id": "w:service|verb",
+      "kind": "lemma",
+      "base_probability": 0.6,
+      "realizations": [
+        {
+          "text": "service",
+          "lexeme_id": "w:service|verb"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "B1"
+    },
+    {
+      "id": "w:system|noun",
+      "kind": "lemma",
+      "base_probability": 0.75,
+      "realizations": [
+        {
+          "text": "system",
+          "lexeme_id": "w:system|noun"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "A2"
+    },
+    {
+      "id": "w:time|verb",
+      "kind": "lemma",
+      "base_probability": 0.45,
+      "realizations": [
+        {
+          "text": "time",
+          "lexeme_id": "w:time|verb"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "B2"
+    },
+    {
+      "id": "w:performance|noun",
+      "kind": "lemma",
+      "base_probability": 0.75,
+      "realizations": [
+        {
+          "text": "performance",
+          "lexeme_id": "w:performance|noun"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "A2"
+    },
+    {
+      "id": "w:unfamiliar|adj",
+      "kind": "lemma",
+      "base_probability": 0.45,
+      "realizations": [
+        {
+          "text": "unfamiliar",
+          "lexeme_id": "w:unfamiliar|adj"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "B2"
+    },
+    {
+      "id": "w:detail|noun",
+      "kind": "lemma",
+      "base_probability": 0.75,
+      "realizations": [
+        {
+          "text": "detail",
+          "lexeme_id": "w:detail|noun"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "A2"
+    },
+    {
+      "id": "w:sometimes|adv",
+      "kind": "lemma",
+      "base_probability": 0.6,
+      "realizations": [
+        {
+          "text": "sometimes",
+          "lexeme_id": "w:sometimes|adv"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "B1"
+    },
+    {
+      "id": "w:too|adv",
+      "kind": "lemma",
+      "base_probability": 0.85,
+      "realizations": [
+        {
+          "text": "too",
+          "lexeme_id": "w:too|adv"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "A1"
+    },
+    {
+      "id": "w:weakness|noun",
+      "kind": "lemma",
+      "base_probability": 0.6,
+      "realizations": [
+        {
+          "text": "weakness",
+          "lexeme_id": "w:weakness|noun"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "B1"
+    },
+    {
+      "id": "w:project|verb",
+      "kind": "lemma",
+      "base_probability": 0.45,
+      "realizations": [
+        {
+          "text": "project",
+          "lexeme_id": "w:project|verb"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "B2"
+    },
+    {
+      "id": "w:technically|adv",
+      "kind": "lemma",
+      "base_probability": 0.45,
+      "realizations": [
+        {
+          "text": "technically",
+          "lexeme_id": "w:technically|adv"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "B2"
+    },
+    {
+      "id": "w:company|noun",
+      "kind": "lemma",
+      "base_probability": 0.75,
+      "realizations": [
+        {
+          "text": "company",
+          "lexeme_id": "w:company|noun"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "A2"
+    },
+    {
+      "id": "w:distribute|verb",
+      "kind": "lemma",
+      "base_probability": 0.6,
+      "realizations": [
+        {
+          "text": "distribute",
+          "lexeme_id": "w:distribute|verb"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "B1"
+    },
+    {
+      "id": "w:production|noun",
+      "kind": "lemma",
+      "base_probability": 0.75,
+      "realizations": [
+        {
+          "text": "production",
+          "lexeme_id": "w:production|noun"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "A2"
+    },
+    {
+      "id": "w:work|verb",
+      "kind": "lemma",
+      "base_probability": 0.85,
+      "realizations": [
+        {
+          "text": "work",
+          "lexeme_id": "w:work|verb"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "A1"
+    },
+    {
+      "id": "w:location|noun",
+      "kind": "lemma",
+      "base_probability": 0.6,
+      "realizations": [
+        {
+          "text": "location",
+          "lexeme_id": "w:location|noun"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "B1"
+    },
+    {
+      "id": "w:market|verb",
+      "kind": "lemma",
+      "base_probability": 0.6,
+      "realizations": [
+        {
+          "text": "market",
+          "lexeme_id": "w:market|verb"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "B1"
+    },
+    {
+      "id": "w:rate|verb",
+      "kind": "lemma",
+      "base_probability": 0.45,
+      "realizations": [
+        {
+          "text": "rate",
+          "lexeme_id": "w:rate|verb"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "B2"
+    },
+    {
+      "id": "w:salary|noun",
+      "kind": "lemma",
+      "base_probability": 0.45,
+      "realizations": [
+        {
+          "text": "salary",
+          "lexeme_id": "w:salary|noun"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "B2"
+    },
+    {
+      "id": "w:also|adv",
+      "kind": "lemma",
+      "base_probability": 0.85,
+      "realizations": [
+        {
+          "text": "also",
+          "lexeme_id": "w:also|adv"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "A1"
+    },
+    {
+      "id": "w:clause|noun",
+      "kind": "lemma",
+      "base_probability": 0.45,
+      "realizations": [
+        {
+          "text": "clause",
+          "lexeme_id": "w:clause|noun"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "B2"
+    },
+    {
+      "id": "w:control|verb",
+      "kind": "lemma",
+      "base_probability": 0.6,
+      "realizations": [
+        {
+          "text": "control",
+          "lexeme_id": "w:control|verb"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "B1"
+    },
+    {
+      "id": "w:data|noun",
+      "kind": "lemma",
+      "base_probability": 0.45,
+      "realizations": [
+        {
+          "text": "data",
+          "lexeme_id": "w:data|noun"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "B2"
+    },
+    {
+      "id": "w:flow|verb",
+      "kind": "lemma",
+      "base_probability": 0.6,
+      "realizations": [
+        {
+          "text": "flow",
+          "lexeme_id": "w:flow|verb"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "B1"
+    },
+    {
+      "id": "w:function|verb",
+      "kind": "lemma",
+      "base_probability": 0.75,
+      "realizations": [
+        {
+          "text": "function",
+          "lexeme_id": "w:function|verb"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "A2"
+    },
+    {
+      "id": "w:match|verb",
+      "kind": "lemma",
+      "base_probability": 0.6,
+      "realizations": [
+        {
+          "text": "match",
+          "lexeme_id": "w:match|verb"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "B1"
+    },
+    {
+      "id": "w:multiple|adj",
+      "kind": "lemma",
+      "base_probability": 0.45,
+      "realizations": [
+        {
+          "text": "multiple",
+          "lexeme_id": "w:multiple|adj"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "B2"
+    },
+    {
+      "id": "w:not|adv",
+      "kind": "lemma",
+      "base_probability": 0.85,
+      "realizations": [
+        {
+          "text": "not",
+          "lexeme_id": "w:not|adv"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "A1"
+    },
+    {
+      "id": "w:pattern|noun",
+      "kind": "lemma",
+      "base_probability": 0.6,
+      "realizations": [
+        {
+          "text": "pattern",
+          "lexeme_id": "w:pattern|noun"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "B1"
+    }
+  ],
+  "attempts": [
+    {
+      "source": "Меня зовут Андрей, я бэкенд-разработчик с пятью годами опыта, последние три года специализируюсь на Elixir и Phoenix.",
+      "answer": "Hello, my name is Andrey and I'm a backend developer. I had five years experience and I have been developing Elixir and Phoenix application for last three years.",
+      "observed_at": "2026-07-19T17:57:57.421867+00:00",
+      "requirements": [
+        {
+          "concept_id": "w:experience|verb",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "experience",
+              "lexeme_id": "w:experience|verb"
+            }
+          ]
+        },
+        {
+          "concept_id": "w:phoenix|noun",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "phoenix",
+              "lexeme_id": "w:phoenix|noun"
+            }
+          ]
+        },
+        {
+          "concept_id": "w:year|noun",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "year",
+              "lexeme_id": "w:year|noun"
+            }
+          ]
+        }
+      ],
+      "corrections": [
+        {
+          "item": "have",
+          "correct": "I have five years of experience",
+          "impact": "minor_noise"
+        },
+        {
+          "item": "the",
+          "correct": "for the last three years",
+          "impact": "minor_noise"
+        },
+        {
+          "item": "applications",
+          "correct": "Elixir and Phoenix applications",
+          "impact": "minor_noise"
+        }
+      ]
+    },
+    {
+      "source": "Я работал над высоконагруженными системами реального времени, включая биллинговые сервисы и системы обработки платежей.",
+      "answer": "I have experience with large-scale systems in real-time, including billing services and payment systems.",
+      "observed_at": "2026-07-19T17:59:23.526308+00:00",
+      "requirements": [
+        {
+          "concept_id": "pv:work_on",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "work on",
+              "lexeme_id": "pv:work_on"
+            }
+          ]
+        },
+        {
+          "concept_id": "w:bill|verb",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "bill",
+              "lexeme_id": "w:bill|verb"
+            }
+          ]
+        },
+        {
+          "concept_id": "w:high|adv",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "high",
+              "lexeme_id": "w:high|adv"
+            }
+          ]
+        },
+        {
+          "concept_id": "w:load|verb",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "load",
+              "lexeme_id": "w:load|verb"
+            }
+          ]
+        },
+        {
+          "concept_id": "w:payment|noun",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "payment",
+              "lexeme_id": "w:payment|noun"
+            }
+          ]
+        },
+        {
+          "concept_id": "w:process|verb",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "process",
+              "lexeme_id": "w:process|verb"
+            }
+          ]
+        },
+        {
+          "concept_id": "w:real|adv",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "real",
+              "lexeme_id": "w:real|adv"
+            }
+          ]
+        },
+        {
+          "concept_id": "w:service|verb",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "service",
+              "lexeme_id": "w:service|verb"
+            }
+          ]
+        },
+        {
+          "concept_id": "w:system|noun",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "system",
+              "lexeme_id": "w:system|noun"
+            }
+          ]
+        },
+        {
+          "concept_id": "w:time|verb",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "time",
+              "lexeme_id": "w:time|verb"
+            }
+          ]
+        }
+      ],
+      "corrections": [
+        {
+          "item": "real-time systems",
+          "correct": "large-scale real-time systems",
+          "impact": "minor_noise"
+        },
+        {
+          "item": "payment processing",
+          "correct": "payment processing systems",
+          "impact": "minor_noise"
+        }
+      ]
+    },
+    {
+      "source": "Моя сильная сторона — умение быстро разбираться в незнакомой кодовой базе и находить узкие места производительности.",
+      "answer": "My strong suit is understanding codebase and ability to find bottlenecks when it comes to efficiency.",
+      "observed_at": "2026-07-19T18:00:41.01082+00:00",
+      "requirements": [
+        {
+          "concept_id": "w:performance|noun",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "performance",
+              "lexeme_id": "w:performance|noun"
+            }
+          ]
+        },
+        {
+          "concept_id": "w:unfamiliar|adj",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "unfamiliar",
+              "lexeme_id": "w:unfamiliar|adj"
+            }
+          ]
+        }
+      ],
+      "corrections": [
+        {
+          "item": "a codebase",
+          "correct": "understanding an unfamiliar codebase",
+          "impact": "minor_noise"
+        },
+        {
+          "item": null,
+          "correct": "understanding an unfamiliar codebase",
+          "impact": "minor_noise"
+        },
+        {
+          "item": null,
+          "correct": "quickly understanding a codebase",
+          "impact": "minor_noise"
+        },
+        {
+          "item": null,
+          "correct": "the ability to quickly understand a codebase and find bottlenecks",
+          "impact": "minor_noise"
+        },
+        {
+          "item": "performance",
+          "correct": "performance bottlenecks",
+          "impact": "minor_noise"
+        }
+      ]
+    },
+    {
+      "source": "Из слабых сторон могу отметить, что иногда слишком глубоко погружаюсь в детали реализации, вместо того чтобы сразу двигаться дальше.",
+      "answer": "Talking about my weaknesses, I dive into detail really deep instead of moving on.",
+      "observed_at": "2026-07-19T20:51:07.879265+00:00",
+      "requirements": [
+        {
+          "concept_id": "w:detail|noun",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "detail",
+              "lexeme_id": "w:detail|noun"
+            }
+          ]
+        },
+        {
+          "concept_id": "w:sometimes|adv",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "sometimes",
+              "lexeme_id": "w:sometimes|adv"
+            }
+          ]
+        },
+        {
+          "concept_id": "w:too|adv",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "too",
+              "lexeme_id": "w:too|adv"
+            }
+          ]
+        },
+        {
+          "concept_id": "w:weakness|noun",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "weakness",
+              "lexeme_id": "w:weakness|noun"
+            }
+          ]
+        }
+      ],
+      "corrections": [
+        {
+          "item": "sometimes",
+          "correct": "I sometimes dive into detail really deep instead of moving on",
+          "impact": "minor_noise"
+        },
+        {
+          "item": "details",
+          "correct": "details",
+          "impact": "minor_noise"
+        },
+        {
+          "item": "right away",
+          "correct": "instead of moving on right away",
+          "impact": "minor_noise"
+        }
+      ]
+    },
+    {
+      "source": "Я ушёл с предыдущего места, потому что хотел работать над более масштабными и технически сложными проектами.",
+      "answer": "I gave up my previous job because I wanted to work on more scalable and technically complicated projects.",
+      "observed_at": "2026-07-19T20:52:21.927183+00:00",
+      "requirements": [
+        {
+          "concept_id": "pv:work_on",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "work on",
+              "lexeme_id": "pv:work_on"
+            }
+          ]
+        },
+        {
+          "concept_id": "w:project|verb",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "project",
+              "lexeme_id": "w:project|verb"
+            }
+          ]
+        },
+        {
+          "concept_id": "w:technically|adv",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "technically",
+              "lexeme_id": "w:technically|adv"
+            }
+          ]
+        }
+      ],
+      "corrections": [
+        {
+          "item": "large-scale",
+          "correct": "more large-scale",
+          "impact": "minor_noise"
+        }
+      ]
+    },
+    {
+      "source": "Меня привлекает ваша компания тем, что вы активно используете Elixir в продакшене и работаете с распределёнными системами.",
+      "answer": "Your opportunity attracts me because you actively use Elixir in production and work with distributed systems.",
+      "observed_at": "2026-07-19T20:53:37.465768+00:00",
+      "requirements": [
+        {
+          "concept_id": "w:company|noun",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "company",
+              "lexeme_id": "w:company|noun"
+            }
+          ]
+        },
+        {
+          "concept_id": "w:distribute|verb",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "distribute",
+              "lexeme_id": "w:distribute|verb"
+            }
+          ]
+        },
+        {
+          "concept_id": "w:production|noun",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "production",
+              "lexeme_id": "w:production|noun"
+            }
+          ]
+        },
+        {
+          "concept_id": "w:system|noun",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "system",
+              "lexeme_id": "w:system|noun"
+            }
+          ]
+        },
+        {
+          "concept_id": "w:work|verb",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "work",
+              "lexeme_id": "w:work|verb"
+            }
+          ]
+        }
+      ],
+      "corrections": [
+        {
+          "item": "company",
+          "correct": "Your company attracts me",
+          "impact": "distortion"
+        }
+      ]
+    },
+    {
+      "source": "Что касается ожиданий по зарплате, я рассчитываю на рыночную ставку с учётом моего опыта и региона.",
+      "answer": "When it comes to salary, I expect a marketing price including my experience and region.",
+      "observed_at": "2026-07-19T20:54:51.228932+00:00",
+      "requirements": [
+        {
+          "concept_id": "w:experience|verb",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "experience",
+              "lexeme_id": "w:experience|verb"
+            }
+          ]
+        },
+        {
+          "concept_id": "w:location|noun",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "location",
+              "lexeme_id": "w:location|noun"
+            }
+          ]
+        },
+        {
+          "concept_id": "w:market|verb",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "market",
+              "lexeme_id": "w:market|verb"
+            }
+          ]
+        },
+        {
+          "concept_id": "w:rate|verb",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "rate",
+              "lexeme_id": "w:rate|verb"
+            }
+          ]
+        },
+        {
+          "concept_id": "w:salary|noun",
+          "importance_weight": 1.0,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "salary",
+              "lexeme_id": "w:salary|noun"
+            }
+          ]
+        }
+      ],
+      "corrections": [
+        {
+          "item": "market rate",
+          "correct": "the market rate",
+          "impact": "distortion"
+        },
+        {
+          "item": "take into account",
+          "correct": "taking into account my experience and region",
+          "impact": "minor_noise"
+        }
+      ]
+    }
+  ],
+  "target": {
+    "source": "Pattern matching в Elixir я использую не только для деструктуризации данных, но и для управления потоком выполнения функций через множественные clauses.",
+    "requirements": [
+      {
+        "concept_id": "w:also|adv",
+        "importance_weight": 1.0,
+        "concept_kind": "lemma",
+        "acceptable_realizations": [
+          {
+            "text": "also",
+            "lexeme_id": "w:also|adv"
+          }
+        ]
+      },
+      {
+        "concept_id": "w:clause|noun",
+        "importance_weight": 1.0,
+        "concept_kind": "lemma",
+        "acceptable_realizations": [
+          {
+            "text": "clause",
+            "lexeme_id": "w:clause|noun"
+          }
+        ]
+      },
+      {
+        "concept_id": "w:control|verb",
+        "importance_weight": 1.0,
+        "concept_kind": "lemma",
+        "acceptable_realizations": [
+          {
+            "text": "control",
+            "lexeme_id": "w:control|verb"
+          }
+        ]
+      },
+      {
+        "concept_id": "w:data|noun",
+        "importance_weight": 1.0,
+        "concept_kind": "lemma",
+        "acceptable_realizations": [
+          {
+            "text": "data",
+            "lexeme_id": "w:data|noun"
+          }
+        ]
+      },
+      {
+        "concept_id": "w:flow|verb",
+        "importance_weight": 1.0,
+        "concept_kind": "lemma",
+        "acceptable_realizations": [
+          {
+            "text": "flow",
+            "lexeme_id": "w:flow|verb"
+          }
+        ]
+      },
+      {
+        "concept_id": "w:function|verb",
+        "importance_weight": 1.0,
+        "concept_kind": "lemma",
+        "acceptable_realizations": [
+          {
+            "text": "function",
+            "lexeme_id": "w:function|verb"
+          }
+        ]
+      },
+      {
+        "concept_id": "w:match|verb",
+        "importance_weight": 1.0,
+        "concept_kind": "lemma",
+        "acceptable_realizations": [
+          {
+            "text": "match",
+            "lexeme_id": "w:match|verb"
+          }
+        ]
+      },
+      {
+        "concept_id": "w:multiple|adj",
+        "importance_weight": 1.0,
+        "concept_kind": "lemma",
+        "acceptable_realizations": [
+          {
+            "text": "multiple",
+            "lexeme_id": "w:multiple|adj"
+          }
+        ]
+      },
+      {
+        "concept_id": "w:not|adv",
+        "importance_weight": 1.0,
+        "concept_kind": "lemma",
+        "acceptable_realizations": [
+          {
+            "text": "not",
+            "lexeme_id": "w:not|adv"
+          }
+        ]
+      },
+      {
+        "concept_id": "w:pattern|noun",
+        "importance_weight": 1.0,
+        "concept_kind": "lemma",
+        "acceptable_realizations": [
+          {
+            "text": "pattern",
+            "lexeme_id": "w:pattern|noun"
+          }
+        ]
+      }
+    ]
+  },
+  "expect": {
+    "weakest_concept": "w:clause|noun",
+    "stronger": "w:also|adv",
+    "weaker": "w:clause|noun",
+    "coverage_min": 0.5,
+    "coverage_max": 0.95
+  }
+}

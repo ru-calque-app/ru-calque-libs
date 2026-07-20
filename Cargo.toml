@@ -26,3 +26,5 @@ tracing = "0.1"
 tokio = { version = "1", features = ["net", "rt-multi-thread", "macros"] }
 reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json"] }
 wordnet-lemmatizer = "0.1"
+# Стемминг для словообразовательных семейств (rc-lexpred): детерминированный, без данных.
+rust-stemmers = "1"

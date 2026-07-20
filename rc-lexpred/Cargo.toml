@@ -14,6 +14,7 @@ serde_json.workspace = true
 chrono.workspace = true
 thiserror.workspace = true
 rc-lex = { path = "../rc-lex" }
+rust-stemmers.workspace = true
 
 # Те же «гейты читаемости», что в сервисах (ru-calque-mastery/ru-calque-eval): пороги
 # лежат в clippy.toml рядом.

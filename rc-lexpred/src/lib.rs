@@ -91,9 +91,16 @@ pub mod scorer;
 pub mod state;
 pub mod update;
 
+/// Словарь форм. Реэкспорт обязателен: `rc_lex::Cefr` и `rc_lex::Kind` торчат в публичном
+/// API этого крейта, и без реэкспорта потребитель обязан завести собственную зависимость на
+/// `rc-lex` — причём РОВНО того же тега, иначе в графе окажутся две несовместимые копии
+/// одних и тех же типов. На эти грабли наступили оба сервиса при подключении.
+pub use rc_lex;
+
 pub use compact::compact_state;
 pub use concept::{
-    Concept, ConceptCatalog, ConceptId, ConceptKind, GroupId, MapCatalog, Realization,
+    derived_groups, Concept, ConceptCatalog, ConceptId, ConceptKind, GroupId, MapCatalog,
+    Realization,
 };
 pub use config::{Config, MissingConcept};
 pub use error::{LexError, LexResult};

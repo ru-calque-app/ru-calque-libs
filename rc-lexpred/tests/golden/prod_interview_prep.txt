@@ -1,0 +1,44 @@
+Lexical prediction
+------------------
+Acceptable translation probability: 0.76  (scorer: baseline-logistic, not calibrated)
+Expected lexical coverage:          0.85
+Evidence quality:                   0.00
+
+Concepts:
+- w:also|adv: 0.90
+  source: group fallback
+  observations: 0
+- w:clause|noun: 0.80
+  source: group fallback
+  observations: 0
+- w:control|verb: 0.86
+  source: group fallback
+  observations: 0
+- w:data|noun: 0.80
+  source: group fallback
+  observations: 0
+- w:flow|verb: 0.86
+  source: group fallback
+  observations: 0
+- w:function|verb: 0.83
+  source: group fallback
+  observations: 0
+- w:match|verb: 0.86
+  source: group fallback
+  observations: 0
+- w:multiple|adj: 0.80
+  source: group fallback
+  observations: 0
+- w:not|adv: 0.90
+  source: group fallback
+  observations: 0
+- w:pattern|noun: 0.86
+  source: group fallback
+  observations: 0
+
+Weakest concepts:
+1. w:clause|noun — 0.80
+2. w:data|noun — 0.80
+3. w:multiple|adj — 0.80
+4. w:function|verb — 0.83
+5. w:control|verb — 0.86

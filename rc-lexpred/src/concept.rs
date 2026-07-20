@@ -11,6 +11,7 @@
 //! со своей статистикой, а не производная от лексем-компонентов.
 
 use std::collections::BTreeMap;
+use std::sync::OnceLock;
 
 use serde::{Deserialize, Serialize};
 
@@ -140,6 +141,54 @@ impl ConceptKind {
             rc_lex::Kind::Idiom => Self::Idiom,
         }
     }
+}
+
+/// Стеммер для словообразовательных семейств. Один на процесс: он неизменяемый.
+fn stemmer() -> &'static rust_stemmers::Stemmer {
+    static S: OnceLock<rust_stemmers::Stemmer> = OnceLock::new();
+    S.get_or_init(|| rust_stemmers::Stemmer::create(rust_stemmers::Algorithm::English))
+}
+
+/// Группы, выводимые из единицы словаря форм.
+///
+/// Это ответ на конкретную проблему, увиденную на реальных данных: у текстов ученика
+/// пересечение лексики между собой — 0–13%, поэтому на новом тексте индивидуальная история
+/// почти всегда пуста, и прогноз вырождается в константу. Перенести знание между текстами
+/// без общих лексем можно только через группы, и одного уровня CEFR для этого мало —
+/// тексты одной колоды примерно одного уровня.
+///
+/// Даём три измерения:
+/// - **семейство по основе слова** (`specialize`/`specialist` → `special`): ближайшее к
+///   настоящему словообразовательному гнезду, что можно получить детерминированно;
+/// - **частотная полоса** по zipf: редкое слово трудно независимо от темы;
+/// - **уровень CEFR**.
+///
+/// Стемминг грубый и ловит НЕ ВСЁ. Портер режет по суффиксам, не по смыслу: `develop`/
+/// `developer`/`development` и `perform`/`performance` он сводит, а `pay`/`payment`,
+/// `decide`/`decision`, `special`/`specialist` — нет (см. тест
+/// `porter_misses_many_derivations`). То есть семейство даёт частичный перенос, а не полный.
+/// Для группового prior это приемлемо — он и так лишь сглаживание, — но выдавать его за
+/// настоящее словообразовательное гнездо нельзя. Полное потребовало бы размеченного
+/// словаря гнёзд, которого у нас нет.
+pub fn derived_groups(lexeme: &rc_lex::Lexeme) -> Vec<GroupId> {
+    let mut out = vec![
+        GroupId::cefr(lexeme.cefr),
+        GroupId::kind(ConceptKind::from_lex(lexeme.kind)),
+    ];
+    if lexeme.zipf > 0.0 {
+        out.push(GroupId::frequency_band(lexeme.zipf));
+    }
+    // Семейство считаем по ГОЛОВЕ единицы: у `move in` головa — `move`.
+    if let Some(head) = lexeme.unit.split_whitespace().next() {
+        let lowered = head.to_lowercase();
+        let stem = stemmer().stem(&lowered);
+        if !stem.is_empty() {
+            out.push(GroupId::family(&stem));
+        }
+    }
+    out.sort();
+    out.dedup();
+    out
 }
 
 /// Допустимая реализация концепта — конкретный английский способ выразить смысл.
@@ -289,7 +338,9 @@ impl ConceptCatalog for MapCatalog {
 
 #[cfg(test)]
 mod tests {
-    use super::{Concept, ConceptCatalog, ConceptId, ConceptKind, GroupId, MapCatalog};
+    use super::{
+        derived_groups, Concept, ConceptCatalog, ConceptId, ConceptKind, GroupId, MapCatalog,
+    };
 
     #[test]
     fn concept_id_serializes_as_a_bare_string() {
@@ -323,6 +374,83 @@ mod tests {
                 GroupId("kind:collocation".into()),
             ]
         );
+    }
+
+    /// Единица словаря для проверки группировки. Строим сами, а не ищем в словаре:
+    /// тест про логику групп, а не про полноту `rc-lex` (`developer` там, например, нет).
+    fn lex(unit: &str, kind: rc_lex::Kind, cefr: rc_lex::Cefr, zipf: f32) -> rc_lex::Lexeme {
+        rc_lex::Lexeme {
+            id: format!("w:{unit}"),
+            unit: unit.to_string(),
+            kind,
+            pos: None,
+            cefr,
+            cefr_derived: false,
+            zipf,
+        }
+    }
+
+    fn family_of(unit: &str) -> GroupId {
+        derived_groups(&lex(unit, rc_lex::Kind::Word, rc_lex::Cefr::B1, 4.0))
+            .into_iter()
+            .find(|g| g.as_str().starts_with("family:"))
+            .unwrap_or_else(|| panic!("нет семейства у {unit}"))
+    }
+
+    /// Ради этого группы и заводились: на реальных данных пересечение лексики между
+    /// текстами 0–13%, и без семейств знание между текстами не переносится вообще.
+    /// Родственные слова обязаны попасть в одну группу.
+    #[test]
+    fn related_words_share_a_derivational_family() {
+        assert_eq!(family_of("develop"), family_of("developer"));
+        assert_eq!(family_of("develop"), family_of("development"));
+        assert_eq!(family_of("perform"), family_of("performance"));
+        // А неродственные — не должны.
+        assert_ne!(family_of("develop"), family_of("weather"));
+    }
+
+    /// Обратная сторона, зафиксированная намеренно: Портер знает только суффиксы, поэтому
+    /// значительная часть гнёзд не собирается. Тест нужен, чтобы масштаб потери был виден
+    /// в коде, а не всплыл при разборе «почему перенос знания слабее ожидаемого».
+    #[test]
+    fn porter_misses_many_derivations() {
+        assert_ne!(family_of("pay"), family_of("payment"));
+        assert_ne!(family_of("decide"), family_of("decision"));
+        assert_ne!(family_of("special"), family_of("specialist"));
+    }
+
+    /// У многословной единицы семейство берётся по голове: `move in` живёт в гнезде
+    /// `move`, а не в собственном.
+    #[test]
+    fn a_multiword_unit_joins_the_family_of_its_head() {
+        let g = derived_groups(&lex(
+            "move in",
+            rc_lex::Kind::PhrasalVerb,
+            rc_lex::Cefr::B1,
+            3.5,
+        ));
+        assert!(g.iter().any(|x| x.as_str() == "family:move"), "{g:?}");
+        assert!(g.iter().any(|x| x.as_str() == "kind:phrasal_verb"), "{g:?}");
+    }
+
+    /// Группы должны давать НЕСКОЛЬКО измерений: одного CEFR мало — тексты одной колоды
+    /// примерно одного уровня, и prior у всех выходил одинаковым.
+    #[test]
+    fn derived_groups_span_several_dimensions() {
+        let g = derived_groups(&lex("utility", rc_lex::Kind::Word, rc_lex::Cefr::B2, 4.31));
+        let has = |p: &str| g.iter().any(|x| x.as_str().starts_with(p));
+        assert!(has("cefr:"), "{g:?}");
+        assert!(has("kind:"), "{g:?}");
+        assert!(has("zipf:"), "{g:?}");
+        assert!(has("family:"), "{g:?}");
+    }
+
+    /// Единица без частотности не должна создавать полосу `zipf:0` — это не «очень редкое»,
+    /// а «нет данных», и сваливать туда всё подряд значит слепить ложную группу.
+    #[test]
+    fn a_unit_without_frequency_gets_no_band() {
+        let g = derived_groups(&lex("kropotkin", rc_lex::Kind::Word, rc_lex::Cefr::C2, 0.0));
+        assert!(!g.iter().any(|x| x.as_str().starts_with("zipf:")), "{g:?}");
     }
 
     #[test]
