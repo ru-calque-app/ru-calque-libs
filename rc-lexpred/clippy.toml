@@ -1,0 +1,5 @@
+# Пороги «читаемости» — те же, что в ru-calque-mastery/ru-calque-eval. Уровни линтов
+# (deny/warn) задаются в Cargo.toml → [lints.clippy]; здесь только пороги.
+too-many-lines-threshold = 30
+excessive-nesting-threshold = 3
+too-many-arguments-threshold = 5

@@ -1,0 +1,237 @@
+{
+  "name": "rent_and_responsibility",
+  "comment": "Ученик уверенно берёт MAKE_DECISION, стабильно проваливает REJECT_OFFER, TAKE_RESPONSIBILITY встречает впервые. Новый текст требует всех трёх.",
+  "concepts": [
+    {
+      "id": "MAKE_DECISION",
+      "kind": "collocation",
+      "base_probability": 0.5,
+      "realizations": [
+        {
+          "text": "make a decision"
+        },
+        {
+          "text": "decide"
+        }
+      ],
+      "group_ids": [
+        "family:decision"
+      ],
+      "cefr": "B1"
+    },
+    {
+      "id": "REJECT_OFFER",
+      "kind": "collocation",
+      "base_probability": 0.45,
+      "realizations": [
+        {
+          "text": "reject the offer"
+        },
+        {
+          "text": "decline the offer"
+        },
+        {
+          "text": "turn down the offer"
+        }
+      ],
+      "group_ids": [
+        "family:offer"
+      ],
+      "cefr": "B2"
+    },
+    {
+      "id": "TAKE_RESPONSIBILITY",
+      "kind": "collocation",
+      "base_probability": 0.4,
+      "realizations": [
+        {
+          "text": "take responsibility"
+        },
+        {
+          "text": "accept responsibility"
+        }
+      ],
+      "group_ids": [
+        "family:responsibility"
+      ],
+      "cefr": "B2"
+    },
+    {
+      "id": "MISTAKE",
+      "kind": "lemma",
+      "base_probability": 0.8,
+      "realizations": [
+        {
+          "text": "mistake"
+        }
+      ],
+      "group_ids": [],
+      "cefr": "A2"
+    }
+  ],
+  "attempts": [
+    {
+      "source": "Я принял решение изменить план.",
+      "answer": "I made a decision to change the plan.",
+      "observed_at": "2026-05-01T10:00:00Z",
+      "requirements": [
+        {
+          "concept_id": "MAKE_DECISION",
+          "importance_weight": 1.0,
+          "concept_kind": "collocation",
+          "acceptable_realizations": [
+            {
+              "text": "make a decision"
+            },
+            {
+              "text": "decide"
+            }
+          ]
+        }
+      ],
+      "corrections": []
+    },
+    {
+      "source": "Он отклонил предложение.",
+      "answer": "He said no to the proposition.",
+      "observed_at": "2026-05-20T10:00:00Z",
+      "requirements": [
+        {
+          "concept_id": "REJECT_OFFER",
+          "importance_weight": 1.0,
+          "concept_kind": "collocation",
+          "acceptable_realizations": [
+            {
+              "text": "reject the offer"
+            },
+            {
+              "text": "decline the offer"
+            },
+            {
+              "text": "turn down the offer"
+            }
+          ]
+        }
+      ],
+      "corrections": [
+        {
+          "item": "reject the offer",
+          "correct": "He rejected the offer.",
+          "impact": "distortion"
+        }
+      ]
+    },
+    {
+      "source": "Я снова принял решение и признал ошибку.",
+      "answer": "I decided again and admitted my mistake.",
+      "observed_at": "2026-06-10T10:00:00Z",
+      "requirements": [
+        {
+          "concept_id": "MAKE_DECISION",
+          "importance_weight": 1.0,
+          "concept_kind": "collocation",
+          "acceptable_realizations": [
+            {
+              "text": "make a decision"
+            },
+            {
+              "text": "decide"
+            }
+          ]
+        },
+        {
+          "concept_id": "MISTAKE",
+          "importance_weight": 0.8,
+          "concept_kind": "lemma",
+          "acceptable_realizations": [
+            {
+              "text": "mistake"
+            }
+          ]
+        }
+      ],
+      "corrections": []
+    },
+    {
+      "source": "Она отклонила предложение о работе.",
+      "answer": "She refused the job thing.",
+      "observed_at": "2026-06-25T10:00:00Z",
+      "requirements": [
+        {
+          "concept_id": "REJECT_OFFER",
+          "importance_weight": 1.0,
+          "concept_kind": "collocation",
+          "acceptable_realizations": [
+            {
+              "text": "reject the offer"
+            },
+            {
+              "text": "decline the offer"
+            },
+            {
+              "text": "turn down the offer"
+            }
+          ]
+        }
+      ],
+      "corrections": [
+        {
+          "item": "reject the offer",
+          "correct": "She turned down the job offer.",
+          "impact": "minor_noise"
+        }
+      ]
+    }
+  ],
+  "target": {
+    "source": "Он отклонил предложение и взял на себя ответственность за ошибку.",
+    "requirements": [
+      {
+        "concept_id": "REJECT_OFFER",
+        "importance_weight": 1.0,
+        "concept_kind": "collocation",
+        "acceptable_realizations": [
+          {
+            "text": "reject the offer"
+          },
+          {
+            "text": "decline the offer"
+          },
+          {
+            "text": "turn down the offer"
+          }
+        ]
+      },
+      {
+        "concept_id": "TAKE_RESPONSIBILITY",
+        "importance_weight": 1.0,
+        "concept_kind": "collocation",
+        "acceptable_realizations": [
+          {
+            "text": "take responsibility"
+          },
+          {
+            "text": "accept responsibility"
+          }
+        ]
+      },
+      {
+        "concept_id": "MISTAKE",
+        "importance_weight": 0.6,
+        "concept_kind": "lemma",
+        "acceptable_realizations": [
+          {
+            "text": "mistake"
+          }
+        ]
+      }
+    ]
+  },
+  "expect": {
+    "weakest_concept": "REJECT_OFFER",
+    "stronger": "MISTAKE",
+    "weaker": "REJECT_OFFER",
+    "coverage_min": 0.25,
+    "coverage_max": 0.75
+  }
+}

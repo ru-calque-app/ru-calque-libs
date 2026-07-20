@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["rc-http", "rc-authn", "rc-db", "rc-lex", "rc-testkit"]
+members = ["rc-http", "rc-authn", "rc-db", "rc-lex", "rc-lexpred", "rc-testkit"]
 
 # Общие библиотеки Rust-сервисов ru-calque. Убирают дубль client-side JWT, HTTP-ошибок,
 # раннера миграций и тест-стенда. Подключаются git-зависимостью с пиннингом по тегу:
@@ -19,7 +19,8 @@ thiserror = "1"
 axum = { version = "0.7", default-features = false, features = ["http1", "tokio", "json"] }
 jsonwebtoken = "9"
 uuid = { version = "1", features = ["v4", "serde"] }
-chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+# `serde` нужен rc-lexpred: состояние ученика сериализуется вместе с временными метками.
+chrono = { version = "0.4", default-features = false, features = ["clock", "std", "serde"] }
 sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio-rustls", "postgres", "macros"] }
 tracing = "0.1"
 tokio = { version = "1", features = ["net", "rt-multi-thread", "macros"] }

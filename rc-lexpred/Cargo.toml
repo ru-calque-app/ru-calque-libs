@@ -1,0 +1,24 @@
+[package]
+name = "rc-lexpred"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Лексическое знание ученика: наблюдения из попыток → компактное состояние → прогноз по новому русскому тексту."
+
+[dependencies]
+serde.workspace = true
+# Состояние ученика сериализуется самим крейтом: сервису достаточно положить строку в БД,
+# не зная её раскладки.
+serde_json.workspace = true
+chrono.workspace = true
+thiserror.workspace = true
+rc-lex = { path = "../rc-lex" }
+
+# Те же «гейты читаемости», что в сервисах (ru-calque-mastery/ru-calque-eval): пороги
+# лежат в clippy.toml рядом.
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+too_many_lines = "deny"
+excessive_nesting = "deny"
+too_many_arguments = "deny"

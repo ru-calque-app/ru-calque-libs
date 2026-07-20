@@ -1,0 +1,21 @@
+Lexical prediction
+------------------
+Acceptable translation probability: 0.29  (scorer: baseline-logistic, not calibrated)
+Expected lexical coverage:          0.60
+Evidence quality:                   0.33
+
+Concepts:
+- REJECT_OFFER: 0.48
+  source: concept history
+  observations: 2
+- TAKE_RESPONSIBILITY: 0.55
+  source: group fallback
+  observations: 0
+- MISTAKE: 0.89
+  source: concept history
+  observations: 1
+
+Weakest concepts:
+1. REJECT_OFFER — 0.48
+2. TAKE_RESPONSIBILITY — 0.55
+3. MISTAKE — 0.89
