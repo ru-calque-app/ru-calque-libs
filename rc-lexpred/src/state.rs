@@ -140,11 +140,34 @@ impl LexicalState {
     ///
     /// Чужую версию схемы молча принимать нельзя: поля разъедутся тихо, счётчики поедут, и
     /// заметим это через месяц по кривым прогнозам. Лучше явная ошибка на загрузке.
+    ///
+    /// Версия читается ДО разбора остального. Иначе `IncompatibleSchema` не срабатывал бы
+    /// ровно в том случае, ради которого существует: у по-настоящему несовместимого
+    /// состояния раскладка полей другая, и обычная десериализация падала бы раньше — с
+    /// невнятной ошибкой serde вместо «состояние старой версии, пересобери».
     pub fn from_json(raw: &str) -> LexResult<Self> {
-        let state: Self = serde_json::from_str(raw)
+        let probe: serde_json::Value = serde_json::from_str(raw)
             .map_err(|e| LexError::Config(format!("состояние не разбирается: {e}")))?;
-        state.check_version()?;
-        Ok(state)
+        match probe
+            .get("schema_version")
+            .and_then(serde_json::Value::as_u64)
+        {
+            Some(v) if v == u64::from(SCHEMA_VERSION) => {}
+            Some(found) => {
+                return Err(LexError::IncompatibleSchema {
+                    // Версия за пределами u16 — тоже несовместимая, насыщением не врём.
+                    found: u16::try_from(found).unwrap_or(u16::MAX),
+                    supported: SCHEMA_VERSION,
+                });
+            }
+            None => {
+                return Err(LexError::Config(
+                    "в состоянии нет поля schema_version".into(),
+                ))
+            }
+        }
+        serde_json::from_str(raw)
+            .map_err(|e| LexError::Config(format!("состояние не разбирается: {e}")))
     }
 
     /// Сериализация состояния.
@@ -200,6 +223,31 @@ mod tests {
                 supported: SCHEMA_VERSION
             })
         );
+    }
+
+    /// Главный случай, ради которого `IncompatibleSchema` и заведён: у состояния ДРУГОЙ
+    /// версии раскладка полей тоже другая. Если сначала разбирать структуру, а версию
+    /// смотреть потом, сюда прилетит невнятная ошибка serde — и ветка «пересобрать
+    /// состояние» не сработает именно тогда, когда она нужна.
+    #[test]
+    fn an_old_layout_reports_its_version_not_a_parse_error() {
+        let raw = r#"{"schema_version":0,"totals":{"ok":1},"legacy":[]}"#;
+        assert_eq!(
+            LexicalState::from_json(raw),
+            Err(LexError::IncompatibleSchema {
+                found: 0,
+                supported: SCHEMA_VERSION
+            })
+        );
+    }
+
+    /// Состояние без версии вообще — не наше. Принимать его нельзя ни под каким видом.
+    #[test]
+    fn a_state_without_a_version_is_refused() {
+        assert!(matches!(
+            LexicalState::from_json(r#"{"overall":{}}"#),
+            Err(LexError::Config(_))
+        ));
     }
 
     #[test]
