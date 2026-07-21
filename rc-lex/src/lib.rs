@@ -209,6 +209,29 @@ impl Dict {
         })
     }
 
+    /// Единица по форме И части речи — точный поиск, без угадывания.
+    ///
+    /// Отличие от [`Dict::lookup`] принципиальное. `lookup` разрешает омонимию сам и делает
+    /// это плохо: у `name` записи `noun` и `verb` имеют одинаковую частотность (список
+    /// униграммный, по написанию), одинаковый `kind`, и выбор сваливается в «последнюю
+    /// строку файла» — систематически `verb`. Часть речи по написанию не восстановить,
+    /// нужен контекст предложения, которого у словаря нет.
+    ///
+    /// Поэтому POS приходит СНАРУЖИ — от того, кто видел предложение (в ru-calque это LLM,
+    /// размечающая переводы). Словарь перестаёт угадывать и становится тем, чем должен
+    /// быть: по `(лемма, pos)` отдаёт факты — уровень, частотность, стабильный id.
+    ///
+    /// `pos` сравнивается регистронезависимо. `None` — такой пары в словаре нет (лемма
+    /// есть в другом значении, или её нет вовсе): это находка, а не повод подставить
+    /// абы-что.
+    pub fn lookup_pos(&self, lemma: &str, pos: &str) -> Option<&Lexeme> {
+        let pos = pos.to_lowercase();
+        self.by_unit
+            .get(lemma)?
+            .iter()
+            .find(|l| l.pos.as_deref().map(str::to_lowercase).as_deref() == Some(pos.as_str()))
+    }
+
     /// Все единицы словаря — для сида таблицы `lexemes` в сервисе.
     pub fn lexemes(&self) -> impl Iterator<Item = &Lexeme> {
         self.by_unit.values().flatten()
@@ -399,5 +422,27 @@ mod tests {
     fn dict_covers_the_expected_scale() {
         let n = dict().lexemes().count();
         assert!(n > 20_000, "словарь подозрительно мал: {n}");
+    }
+
+    /// Главное, ради чего заведён `lookup_pos`: у `name`/`experience` записи noun и verb
+    /// с одинаковой частотностью, и `lookup` систематически брал verb (артефакт
+    /// «max_by → последний»), задирая уровень (`name` B1 вместо A1). С явным POS выбор
+    /// становится верным — и словарь больше не угадывает часть речи по написанию.
+    #[test]
+    fn lookup_pos_picks_the_right_reading_where_lookup_guesses_wrong() {
+        let d = dict();
+        let name_noun = d.lookup_pos("name", "noun").expect("name/noun");
+        assert_eq!(name_noun.id, "w:name|noun");
+        assert_eq!(name_noun.cefr, Cefr::A1);
+        assert_eq!(d.lookup_pos("name", "verb").unwrap().cefr, Cefr::B1);
+        assert_eq!(
+            d.lookup_pos("experience", "noun").unwrap().id,
+            "w:experience|noun"
+        );
+        // Регистр POS не важен.
+        assert_eq!(d.lookup_pos("name", "NOUN").unwrap().id, "w:name|noun");
+        // Пары нет — не подставляем абы-что.
+        assert!(d.lookup_pos("name", "adv").is_none());
+        assert!(d.lookup_pos("zzzznotaword", "noun").is_none());
     }
 }
