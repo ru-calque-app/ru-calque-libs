@@ -1,0 +1,22 @@
+[package]
+name = "rc-gram"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Грамматический инвентарь ru-calque: конструкция → CEFR, категория, can-do, примеры из корпуса."
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+# Ради `Cefr`: уровень грамматической конструкции и уровень лексической единицы обязаны
+# быть ОДНИМ типом — их сравнивают между собой при оценке текста. Своя копия enum'а дала бы
+# два несравнимых `Cefr` в графе (грабли из rc-lexpred). Цена — лексикон rc-lex уезжает в
+# бинарь вместе с инвентарём; см. README, вопрос про выделение `rc-cefr`.
+rc-lex = { path = "../rc-lex" }
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+too_many_lines = "deny"
+excessive_nesting = "deny"
+too_many_arguments = "deny"

@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["rc-http", "rc-authn", "rc-db", "rc-lex", "rc-lexpred", "rc-testkit"]
+members = ["rc-http", "rc-authn", "rc-db", "rc-lex", "rc-gram", "rc-lexpred", "rc-testkit"]
 
 # Общие библиотеки Rust-сервисов ru-calque. Убирают дубль client-side JWT, HTTP-ошибок,
 # раннера миграций и тест-стенда. Подключаются git-зависимостью с пиннингом по тегу:
